@@ -190,8 +190,8 @@ pytest -v
 ## 📄 License
 This project is open source and available under the [MIT License](LICENSE).
 
-## Live Demo
+## 🚀 Live Demo
 
-🚀 Live Demo: Coming soon
+🌐 **Live Application:** https://careerforge-31it.onrender.com/
 
-📂 GitHub: https://github.com/Naveenkumar04-tech/careerforge
+📂 **GitHub Repository:** https://github.com/Naveenkumar04-tech/careerforge
