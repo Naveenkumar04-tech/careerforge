@@ -1,4 +1,4 @@
-# Student Career & Job Recommendation System
+# CareerForge – Student Career & Job Recommendation System
 
 [![Python Version](https://img.shields.io/badge/python-3.14-blue.svg)](https://www.python.org/)
 [![Framework](https://img.shields.io/badge/framework-Flask-green.svg)](https://flask.palletsprojects.com/)
@@ -189,3 +189,9 @@ pytest -v
 
 ## 📄 License
 This project is open source and available under the [MIT License](LICENSE).
+
+## Live Demo
+
+🚀 Live Demo: Coming soon
+
+📂 GitHub: https://github.com/Naveenkumar04-tech/careerforge
