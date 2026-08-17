@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Virtual environment
+venv/
+ENV/
+env/
+
+# Environment files containing credentials
+.env
+
+# Testing & coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# IDE files
+.vscode/
+.idea/
+
+# OS metadata
+.DS_Store
+Thumbs.db

@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+
+{% block title %}Student Dashboard | {{ student.name }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Header Banner -->
+    <div class="d-md-flex align-items-center justify-content-between mb-4 bg-white p-4 rounded-3 border shadow-sm">
+        <div>
+            <span class="badge bg-primary-subtle text-primary mb-2">Student Career Dashboard</span>
+            <h2 class="fw-bold mb-1">Welcome, {{ student.name }}! 👋</h2>
+            <p class="text-muted mb-0">
+                <i class="bi bi-mortarboard-fill me-1"></i> {{ student.education.degree }} in {{ student.education.branch }} | CGPA: <strong class="text-dark">{{ student.education.cgpa }}</strong>
+            </p>
+        </div>
+        <div class="mt-3 mt-md-0 d-flex gap-2">
+            <a href="{{ url_for('student.profile_form', id=student_id) }}" class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-pencil-square me-1"></i> Edit Profile
+            </a>
+            <a href="{{ url_for('student.roadmap', student_id=student_id) }}" class="btn btn-primary-custom btn-sm">
+                <i class="bi bi-map-fill me-1"></i> View Career Roadmap
+            </a>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Left Column: Readiness Score & Summary -->
+        <div class="col-lg-4">
+            <div class="metric-card h-100 text-center">
+                <h5 class="fw-bold mb-3 text-secondary">Career Readiness Score</h5>
+                
+                {% set score = readiness.total_score if readiness else 70 %}
+                <div class="readiness-gauge mb-3" style="--percentage: {{ score }};">
+                    <span class="readiness-gauge-value">{{ score }}<small class="fs-6 text-muted">/100</small></span>
+                </div>
+
+                <div class="alert alert-info text-start small mb-4">
+                    <i class="bi bi-info-circle-fill me-1"></i>
+                    {{ readiness.summary if readiness else 'Your profile is developing well. Add target skills to boost readiness.' }}
+                </div>
+
+                <h6 class="fw-bold text-start text-dark mb-2">Readiness Breakdown</h6>
+                {% if readiness and readiness.breakdown %}
+                    {% for key, val in readiness.breakdown.items() %}
+                    <div class="mb-2 text-start">
+                        <div class="d-flex justify-content-between small mb-1">
+                            <span class="text-capitalize">{{ key|replace('_', ' ') }}</span>
+                            <span class="fw-bold">{{ val.score }} / {{ val.max }}</span>
+                        </div>
+                        {% set pct = (val.score / val.max * 100)|round|int %}
+                        <div class="progress progress-custom">
+                            <div class="progress-bar progress-bar-custom" style="width: {{ pct }}%;"></div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Right Column: Top Matches & Skill Gaps -->
+        <div class="col-lg-8">
+            <!-- Top Career Matches Card -->
+            <div class="metric-card mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="fw-bold mb-0 text-secondary"><i class="bi bi-trophy-fill text-warning me-2"></i>Top Career Role Matches</h5>
+                    <a href="{{ url_for('student.results', student_id=student_id) }}" class="small fw-semibold text-decoration-none">
+                        View All 12 Roles &rarr;
+                    </a>
+                </div>
+
+                <div class="row g-3">
+                    {% for match in top_matches %}
+                    <div class="col-md-4">
+                        <div class="p-3 border rounded-3 text-center bg-light-subtle h-100">
+                            <span class="badge bg-secondary mb-2">Match #{{ loop.index }}</span>
+                            <h6 class="fw-bold text-dark mb-1">{{ match.role_title }}</h6>
+                            <h3 class="fw-extrabold text-primary mb-2">{{ match.match_percentage }}%</h3>
+                            <p class="small text-muted mb-0 truncate-2">{{ match.description }}</p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Strengths & Missing Skills Breakdown -->
+            <div class="metric-card">
+                <h5 class="fw-bold mb-3 text-secondary"><i class="bi bi-layers-half me-2"></i>Skill Gap & Profile Analysis</h5>
+
+                <div class="row g-3">
+                    <!-- Strengths / Matched Skills -->
+                    <div class="col-md-6">
+                        <div class="p-3 border rounded-3 bg-success-subtle border-success-subtle h-100">
+                            <h6 class="fw-bold text-success mb-2"><i class="bi bi-check-circle-fill me-1"></i> Your Profile Strengths</h6>
+                            <div class="mb-2">
+                                <span class="small fw-semibold text-dark">Matched Skills for Target Role:</span>
+                                <div class="mt-1">
+                                    {% if top_match and top_match.matched_skills %}
+                                        {% for skill in top_match.matched_skills %}
+                                            <span class="skill-badge badge-matched">{{ skill }}</span>
+                                        {% endfor %}
+                                    {% else %}
+                                        <span class="small text-muted">No exact skill matches found.</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="mt-2">
+                                <span class="small fw-semibold text-dark">Academic Background:</span>
+                                <p class="small text-muted mb-0">Strong academic record (CGPA {{ student.education.cgpa }} in {{ student.education.branch }}).</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Missing Skills / Recommendations -->
+                    <div class="col-md-6">
+                        <div class="p-3 border rounded-3 bg-danger-subtle border-danger-subtle h-100">
+                            <h6 class="fw-bold text-danger mb-2"><i class="bi bi-exclamation-octagon-fill me-1"></i> Missing Critical Skills</h6>
+                            <p class="small text-dark mb-2">Skills to acquire for <strong>{{ top_match.role_title }}</strong>:</p>
+                            <div>
+                                {% if top_match and top_match.missing_skills %}
+                                    {% for skill in top_match.missing_skills %}
+                                        <span class="skill-badge badge-missing">{{ skill }}</span>
+                                    {% endfor %}
+                                {% else %}
+                                    <span class="small text-muted">No missing required skills! Perfect match.</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Call to action button -->
+                <div class="text-end mt-4">
+                    <a href="{{ url_for('student.roadmap', student_id=student_id) }}" class="btn btn-primary-custom">
+                        <i class="bi bi-compass-fill me-1"></i> Generate My 6-Month Roadmap &rarr;
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

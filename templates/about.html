@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}About Project | Student Career & Job Recommendation System{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-9">
+            <div class="text-center mb-5">
+                <span class="badge bg-primary-subtle text-primary px-3 py-2 rounded-pill fw-semibold mb-2">Portfolio Showcase</span>
+                <h1 class="fw-bold">Student Career & Job Recommendation System</h1>
+                <p class="text-muted fs-5">A full-stack, rule-based career analytics engine designed for computer science students and fresh graduates.</p>
+            </div>
+
+            <div class="metric-card mb-4">
+                <h4 class="fw-bold text-primary mb-3"><i class="bi bi-bullseye me-2"></i>Project Motivation & Goal</h4>
+                <p>
+                    Transitioning from college academics to entry-level tech roles can be overwhelming for computer science students. Students often lack clarity on which industry roles match their existing skill set, what specific technologies they need to learn next, and how employability ready they are.
+                </p>
+                <p class="mb-0">
+                    This application solves this problem by providing transparent, data-driven profile evaluations, calculating career readiness scores ($0-100$), ranking 12 high-demand software job roles, and generating a personalized 6-month learning roadmap.
+                </p>
+            </div>
+
+            <div class="metric-card mb-4">
+                <h4 class="fw-bold text-primary mb-3"><i class="bi bi-diagram-3 me-2"></i>System Architecture</h4>
+                <div class="p-3 bg-light rounded-3 font-monospace small text-dark mb-3">
+                    User Browser (HTML5/CSS3/JS/Bootstrap 5) <br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&darr; HTTP Form / REST Requests <br>
+                    Flask Web Server (Python 3.14) <br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&boxvr;&ndash;&ndash; Routes Layer (Blueprints: main_bp, student_bp) <br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&boxvr;&ndash;&ndash; Service Layer (Recommendation Engine, Scoring Engine, Roadmap Generator) <br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&boxvr;&ndash;&ndash; Model Layer (PyMongo Client + In-Memory Fallback Store) <br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&darr; JSON Documents <br>
+                    MongoDB Database (`students` collection)
+                </div>
+            </div>
+
+            <div class="metric-card mb-4">
+                <h4 class="fw-bold text-primary mb-3"><i class="bi bi-cpu me-2"></i>Recommendation & Scoring Algorithm Formula</h4>
+                <p class="mb-2">For each of the 12 job roles, a compatibility score ($0-100\%$) is calculated across 6 weighted components:</p>
+                <ul class="list-group list-group-flush mb-3">
+                    <li class="list-group-item bg-transparent"><strong>Technical Skills (40%)</strong>: Evaluates required vs preferred skill overlap using Jaccard coverage.</li>
+                    <li class="list-group-item bg-transparent"><strong>Education & CGPA (15%)</strong>: Evaluates CGPA threshold against minimum role expectations.</li>
+                    <li class="list-group-item bg-transparent"><strong>Practical Projects (15%)</strong>: Evaluates quantity and technical detail of completed portfolio projects.</li>
+                    <li class="list-group-item bg-transparent"><strong>Certifications (10%)</strong>: Matches industry certifications with role domain keywords.</li>
+                    <li class="list-group-item bg-transparent"><strong>Interests (10%)</strong>: Checks domain interest alignment (Web, Cloud, Data, Security, etc.).</li>
+                    <li class="list-group-item bg-transparent"><strong>Experience Level (10%)</strong>: Considers Beginner, Intermediate, or Advanced level.</li>
+                </ul>
+            </div>
+
+            <div class="metric-card text-center bg-light-subtle">
+                <h5 class="fw-bold mb-2">Developed as a Student Portfolio Project</h5>
+                <p class="small text-muted mb-3">Designed with clean, modular Python architecture, automated Pytest test suite, and graceful database fallbacks.</p>
+                <a href="{{ url_for('student.profile_form') }}" class="btn btn-primary-custom">Try the Assessment</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

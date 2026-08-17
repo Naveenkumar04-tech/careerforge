@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+
+{% block title %}Student Career & Job Recommendation System | Home{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section text-center">
+    <div class="container position-relative">
+        <span class="badge bg-primary-subtle text-primary px-3 py-2 rounded-pill fw-semibold mb-3">
+            <i class="bi bi-rocket-takeoff-fill me-1"></i> Career Intelligence for Tech Students
+        </span>
+        <h1 class="display-4 fw-bold tracking-tight mb-3">Find Your Best Career Path</h1>
+        <p class="hero-subtitle">
+            Analyze your skills, degree, CGPA, and interests to discover suitable technology job roles, pinpoint missing skills, and unlock a personalized 6-month learning roadmap.
+        </p>
+        <div class="d-flex justify-content-center gap-3">
+            <a href="{{ url_for('student.profile_form') }}" class="btn btn-primary-custom btn-lg">
+                <i class="bi bi-speedometer2 me-2"></i> Analyze My Career
+            </a>
+            <a href="{{ url_for('main.about') }}" class="btn btn-outline-light btn-lg px-4 rounded-3 fw-semibold">
+                <i class="bi bi-info-circle me-2"></i> How It Works
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Feature Cards Section -->
+<section class="py-5">
+    <div class="container py-4">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold">Intelligent Career Guidance Platform</h2>
+            <p class="text-muted fs-5">Everything you need to evaluate your software career readiness and plan your learning path.</p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-3">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="bi bi-briefcase-fill"></i>
+                    </div>
+                    <h5 class="fw-bold mb-2">Career Matching</h5>
+                    <p class="text-muted small mb-0">Compares your skills against 12 major tech roles (Backend, Data Science, ML, Cloud, Full Stack, QA, etc.) to compute dynamic match percentages.</p>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-3">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="bi bi-graph-up-arrow"></i>
+                    </div>
+                    <h5 class="fw-bold mb-2">Career Readiness</h5>
+                    <p class="text-muted small mb-0">Computes a transparent 0–100 Employability Score broken down into Technical Skills, Academic CGPA, Projects, Certifications, and Experience.</p>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-3">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="bi bi-layers-half"></i>
+                    </div>
+                    <h5 class="fw-bold mb-2">Skill Gap Analysis</h5>
+                    <p class="text-muted small mb-0">Clearly highlights matched strengths vs missing required skills so you know exactly what technologies to focus on next.</p>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-3">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="bi bi-map-fill"></i>
+                    </div>
+                    <h5 class="fw-bold mb-2">6-Month Roadmap</h5>
+                    <p class="text-muted small mb-0">Generates a customized month-by-month learning plan specifically designed to bridge your unique skill gaps before job applications.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Supported Job Roles Grid -->
+<section class="bg-white py-5 border-top border-bottom">
+    <div class="container py-3">
+        <div class="row align-items-center mb-4">
+            <div class="col-md-8">
+                <h3 class="fw-bold mb-1">Supported Tech Career Paths</h3>
+                <p class="text-muted mb-0">Our recommendation system evaluates compatibility across 12 high-demand industry profiles.</p>
+            </div>
+            <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                <a href="{{ url_for('student.profile_form') }}" class="btn btn-outline-primary fw-semibold">Take Assessment &rarr;</a>
+            </div>
+        </div>
+
+        <div class="row g-3">
+            {% set roles = [
+                ("Software Developer", "bi-code-slash", "C++, Python, Java, SQL, Data Structures"),
+                ("Backend Developer", "bi-hdd-stack", "Python, Flask/Django, Node.js, REST APIs, Databases"),
+                ("Frontend Developer", "bi-layout-sidebar-inset", "HTML5, CSS3, JavaScript, Bootstrap, React"),
+                ("Full Stack Developer", "bi-window-stack", "HTML, CSS, JS, Python, Flask, SQL, MongoDB"),
+                ("Data Analyst", "bi-bar-chart-line", "Python, SQL, Excel, Pandas, Data Visualization"),
+                ("Data Scientist", "bi-pie-chart-fill", "Python, SQL, Pandas, NumPy, Scikit-Learn, Stats"),
+                ("Machine Learning Engineer", "bi-cpu-fill", "Python, Scikit-Learn, TensorFlow, PyTorch, Math"),
+                ("Cloud Engineer", "bi-cloud-check-fill", "AWS, Azure, GCP, Linux, Networking, Python"),
+                ("DevOps Engineer", "bi-terminal-fill", "Linux, Git, Docker, CI/CD, Shell Scripting"),
+                ("Database Developer", "bi-database-fill-gear", "SQL, PostgreSQL, MySQL, MongoDB, Data Modeling"),
+                ("Cybersecurity Analyst", "bi-shield-lock-fill", "Linux, Networking, Security, Python, Cryptography"),
+                ("QA / Test Engineer", "bi-bug-fill", "Python, Java, Selenium, Unit Testing, Postman")
+            ] %}
+
+            {% for title, icon, skills in roles %}
+            <div class="col-md-4 col-lg-3">
+                <div class="p-3 border rounded-3 h-100 bg-light-subtle">
+                    <div class="d-flex align-items-center mb-2">
+                        <i class="bi {{ icon }} text-primary fs-4 me-2"></i>
+                        <h6 class="fw-bold mb-0">{{ title }}</h6>
+                    </div>
+                    <p class="small text-muted mb-0"><strong class="text-dark">Key skills:</strong> {{ skills }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action Banner -->
+<section class="py-5 text-center bg-primary text-white">
+    <div class="container py-3">
+        <h2 class="fw-bold mb-2">Ready to Discover Your Ideal Career Path?</h2>
+        <p class="lead opacity-90 mb-4">Complete your student profile in under 2 minutes and get instant career recommendations.</p>
+        <a href="{{ url_for('student.profile_form') }}" class="btn btn-light btn-lg px-5 fw-bold text-primary rounded-3 shadow">
+            Get Started Now
+        </a>
+    </div>
+</section>
+{% endblock %}

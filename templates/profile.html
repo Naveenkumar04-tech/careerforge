@@ -1,0 +1,177 @@
+{% extends "base.html" %}
+
+{% block title %}Student Profile Assessment | Student Career System{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="text-center mb-4">
+                <span class="badge bg-primary-subtle text-primary px-3 py-2 rounded-pill fw-semibold mb-2">Step 1 of 2</span>
+                <h2 class="fw-bold">Student Profile Assessment</h2>
+                <p class="text-muted">Enter your academic details, technical skills, and experience to analyze your career match.</p>
+            </div>
+
+            <form id="student-profile-form" action="{{ url_for('student.analyze_profile') }}" method="POST">
+                {% if student and student._id %}
+                    <input type="hidden" name="student_id" value="{{ student._id }}">
+                {% endif %}
+
+                <!-- Section 1: Personal Information -->
+                <div class="form-section-card">
+                    <h5 class="fw-bold text-primary mb-3"><i class="bi bi-person-badge me-2"></i>1. Personal Information</h5>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="name" class="form-label">Full Name <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="name" name="name" required placeholder="e.g. Alex Vance" value="{{ student.name if student else (form_data.name if form_data else '') }}">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="email" class="form-label">Email Address <span class="text-danger">*</span></label>
+                            <input type="email" class="form-control" id="email" name="email" required placeholder="e.g. alex@example.com" value="{{ student.email if student else (form_data.email if form_data else '') }}">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 2: Education -->
+                <div class="form-section-card">
+                    <h5 class="fw-bold text-primary mb-3"><i class="bi bi-mortarboard me-2"></i>2. Education Details</h5>
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <label for="degree" class="form-label">Degree <span class="text-danger">*</span></label>
+                            <select class="form-select" id="degree" name="degree" required>
+                                {% set deg = student.education.degree if student and student.education else (form_data.degree if form_data else 'B.Tech') %}
+                                <option value="B.Tech" {% if deg == 'B.Tech' %}selected{% endif %}>B.Tech / B.E.</option>
+                                <option value="B.S." {% if deg == 'B.S.' %}selected{% endif %}>B.S. Computer Science</option>
+                                <option value="M.Tech" {% if deg == 'M.Tech' %}selected{% endif %}>M.Tech / M.E.</option>
+                                <option value="BCA" {% if deg == 'BCA' %}selected{% endif %}>BCA</option>
+                                <option value="MCA" {% if deg == 'MCA' %}selected{% endif %}>MCA</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="branch" class="form-label">Branch / Major <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="branch" name="branch" required placeholder="e.g. Computer Science & Engineering" value="{{ student.education.branch if student and student.education else (form_data.branch if form_data else 'Computer Science') }}">
+                        </div>
+                        <div class="col-md-2.5">
+                            <label for="cgpa" class="form-label">CGPA (0.0 - 10.0) <span class="text-danger">*</span></label>
+                            <input type="number" step="0.01" min="0.0" max="10.0" class="form-control" id="cgpa" name="cgpa" required placeholder="e.g. 8.5" value="{{ student.education.cgpa if student and student.education else (form_data.cgpa if form_data else '8.0') }}">
+                        </div>
+                        <div class="col-md-2.5">
+                            <label for="graduation_year" class="form-label">Graduation Year</label>
+                            <input type="number" class="form-control" id="graduation_year" name="graduation_year" placeholder="e.g. 2026" value="{{ student.education.graduation_year if student and student.education else (form_data.graduation_year if form_data else '2026') }}">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 3: Technical Skills -->
+                <div class="form-section-card">
+                    <h5 class="fw-bold text-primary mb-2"><i class="bi bi-code-slash me-2"></i>3. Technical Skills</h5>
+                    <p class="text-muted small mb-3">Enter languages, databases, frameworks, and developer tools separated by commas.</p>
+                    <div class="mb-3">
+                        <label for="skills" class="form-label">Skills List <span class="text-danger">*</span></label>
+                        {% set skill_str = student.skills|join(', ') if student and student.skills else (form_data.skills if form_data else 'Python, C++, HTML, CSS, JavaScript, Flask, SQL, Git, MongoDB') %}
+                        <textarea class="form-control" id="skills" name="skills" rows="3" required placeholder="e.g. Python, Java, C++, HTML, CSS, JavaScript, Flask, SQL, Git, MongoDB">{{ skill_str }}</textarea>
+                    </div>
+                </div>
+
+                <!-- Section 4: Certifications & Interests -->
+                <div class="form-section-card">
+                    <h5 class="fw-bold text-primary mb-3"><i class="bi bi-patch-check me-2"></i>4. Certifications & Career Interests</h5>
+                    <div class="mb-4">
+                        <label for="certifications" class="form-label">Certifications (Optional)</label>
+                        {% set cert_str = student.certifications|join(', ') if student and student.certifications else (form_data.certifications if form_data else 'AWS Certified Cloud Practitioner, Python Essentials') %}
+                        <input type="text" class="form-control" id="certifications" name="certifications" placeholder="e.g. AWS Certified Practitioner, Python PCEP, Meta Frontend Certificate" value="{{ cert_str }}">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label d-block">Career Interest Domains (Select all that apply)</label>
+                        {% set user_ints = student.interests if student and student.interests else (form_data.getlist('interests') if form_data else ['Web Development', 'Backend Development', 'Cloud Computing']) %}
+                        <div class="row g-2">
+                            {% set all_interests = ["Web Development", "Backend Development", "Data Science", "AI/ML", "Cloud Computing", "Cybersecurity", "DevOps", "Database Development", "Mobile Development"] %}
+                            {% for interest in all_interests %}
+                            <div class="col-md-4">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="interests" value="{{ interest }}" id="int_{{ loop.index }}" {% if interest in user_ints %}checked{% endif %}>
+                                    <label class="form-check-label" for="int_{{ loop.index }}">{{ interest }}</label>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 5: Experience & Projects -->
+                <div class="form-section-card">
+                    <h5 class="fw-bold text-primary mb-3"><i class="bi bi-folder-check me-2"></i>5. Experience & Key Projects</h5>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label for="experience_level" class="form-label">Experience Level <span class="text-danger">*</span></label>
+                            {% set exp = student.experience_level if student else (form_data.experience_level if form_data else 'Intermediate') %}
+                            <select class="form-select" id="experience_level" name="experience_level" required>
+                                <option value="Beginner" {% if exp == 'Beginner' %}selected{% endif %}>Beginner (0 - 1 years programming)</option>
+                                <option value="Intermediate" {% if exp == 'Intermediate' %}selected{% endif %}>Intermediate (1 - 3 years programming)</option>
+                                <option value="Advanced" {% if exp == 'Advanced' %}selected{% endif %}>Advanced (3+ years / prior internship)</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="preferred_career" class="form-label">Preferred Career Target (Optional)</label>
+                            {% set pref = student.preferred_career if student else (form_data.preferred_career if form_data else 'Backend Developer') %}
+                            <select class="form-select" id="preferred_career" name="preferred_career">
+                                <option value="" {% if not pref %}selected{% endif %}>No Preference (Let algorithm decide)</option>
+                                <option value="Software Developer" {% if pref == 'Software Developer' %}selected{% endif %}>Software Developer</option>
+                                <option value="Backend Developer" {% if pref == 'Backend Developer' %}selected{% endif %}>Backend Developer</option>
+                                <option value="Frontend Developer" {% if pref == 'Frontend Developer' %}selected{% endif %}>Frontend Developer</option>
+                                <option value="Full Stack Developer" {% if pref == 'Full Stack Developer' %}selected{% endif %}>Full Stack Developer</option>
+                                <option value="Data Analyst" {% if pref == 'Data Analyst' %}selected{% endif %}>Data Analyst</option>
+                                <option value="Data Scientist" {% if pref == 'Data Scientist' %}selected{% endif %}>Data Scientist</option>
+                                <option value="Machine Learning Engineer" {% if pref == 'Machine Learning Engineer' %}selected{% endif %}>Machine Learning Engineer</option>
+                                <option value="Cloud Engineer" {% if pref == 'Cloud Engineer' %}selected{% endif %}>Cloud Engineer</option>
+                                <option value="DevOps Engineer" {% if pref == 'DevOps Engineer' %}selected{% endif %}>DevOps Engineer</option>
+                                <option value="Database Developer" {% if pref == 'Database Developer' %}selected{% endif %}>Database Developer</option>
+                                <option value="Cybersecurity Analyst" {% if pref == 'Cybersecurity Analyst' %}selected{% endif %}>Cybersecurity Analyst</option>
+                                <option value="QA / Test Engineer" {% if pref == 'QA / Test Engineer' %}selected{% endif %}>QA / Test Engineer</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Dynamic Projects Container -->
+                    <label class="form-label fw-bold">Projects Built</label>
+                    <div id="projects-container">
+                        {% set projs = student.projects if student and student.projects else [{"title": "E-Commerce REST API", "description": "Built using Flask, PostgreSQL, and Docker."}] %}
+                        {% for proj in projs %}
+                        <div class="project-row card p-3 mb-3 border-light shadow-sm">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <h6 class="fw-bold mb-0 text-secondary">Project #{{ loop.index }}</h6>
+                                {% if loop.index > 1 %}
+                                <button type="button" class="btn btn-sm btn-outline-danger remove-project-btn">
+                                    <i class="bi bi-trash"></i> Remove
+                                </button>
+                                {% endif %}
+                            </div>
+                            <div class="mb-2">
+                                <label class="form-label small fw-semibold">Project Title</label>
+                                <input type="text" name="project_title" class="form-control form-control-sm" value="{{ proj.title }}" placeholder="e.g. Student Management API">
+                            </div>
+                            <div>
+                                <label class="form-label small fw-semibold">Project Description</label>
+                                <textarea name="project_desc" class="form-control form-control-sm" rows="2" placeholder="Technologies used, key features, and implementation details...">{{ proj.description }}</textarea>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <button type="button" id="add-project-btn" class="btn btn-outline-secondary btn-sm mt-1">
+                        <i class="bi bi-plus-circle me-1"></i> Add Another Project
+                    </button>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="text-center mt-4">
+                    <button type="submit" class="btn btn-primary-custom btn-lg px-5 shadow">
+                        <i class="bi bi-cpu-fill me-2"></i> Calculate Recommendations & Dashboard
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
